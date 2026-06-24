@@ -1,47 +1,47 @@
-# Svelte + TS + Vite
+# Qrati Connect — Svelte Example
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+Embeds [Qrati Connect](https://qrati.com) into a Svelte + Vite app using the
+framework-agnostic **web component** integration, with a host-controlled
+light/dark theme and a demo login for organizations that use custom auth.
 
-## Recommended IDE Setup
+## Integration method: Web component
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+Svelte renders custom elements natively, so we load the element bundle from the
+CDN and drop `<qrati-connect>` into the markup:
 
-## Need an official Svelte framework?
-
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
-
-## Technical considerations
-
-**Why use this over SvelteKit?**
-
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
-
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
-
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
-
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+```svelte
+<qrati-connect organization-id={ORGANIZATION_ID} uid={user.userId} theme={theme} router="hash" />
 ```
+
+The bundle (and its styles) are loaded once on mount — see `src/App.svelte`.
+
+## Run it
+
+```bash
+bun install
+cp .env.example .env   # optional — sensible defaults are baked in
+bun dev
+```
+
+## Configuration
+
+Set these in `.env` (all optional; the demo org is used as a fallback):
+
+| Variable                 | Description                                                       |
+| ------------------------ | ----------------------------------------------------------------- |
+| `VITE_ORGANIZATION_ID`   | Your Qrati organization ID                                        |
+| `VITE_QRATI_SCRIPT_URL`  | CDN URL of the web-component bundle (`element/web.es.js`)          |
+| `VITE_API_ENDPOINT`      | Demo-login endpoint for custom-auth orgs. Leave empty to skip it. |
+
+## Demo auth
+
+Orgs with custom auth expect a known user. The login form (`src/auth.ts`) derives
+a stable `uid` from the email, optionally POSTs to `VITE_API_ENDPOINT`, then
+renders the widget with `uid` / `fname` / `lname` so the user is recognized.
+
+## Other integration methods
+
+- **React component** — `import { QratiConnect }` (see the React/Next/Preact examples).
+- **Embed (no-code)** — single `<script>` tag with `data-*` attributes (see the Vanilla JS / Marko / Ember examples).
+
+Docs: <https://www.npmjs.com/package/@qratilabs/qrati-connect>
