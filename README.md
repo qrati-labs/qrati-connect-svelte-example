@@ -2,7 +2,9 @@
 
 Embeds [Qrati Connect](https://qrati.com) into a Svelte + Vite app using the
 framework-agnostic **web component** integration, with a host-controlled
-light/dark theme and a demo login for organizations that use custom auth.
+light/dark theme. The demo org used here is configured for custom storage on
+the Qrati backend — that's a server-side setting with no frontend impact, so
+the embed code below is unchanged from a standard org.
 
 ## Integration method: Web component
 
@@ -10,7 +12,7 @@ Svelte renders custom elements natively, so we load the element bundle from the
 CDN and drop `<qrati-connect>` into the markup:
 
 ```svelte
-<qrati-connect organization-id={ORGANIZATION_ID} uid={user.userId} theme={theme} router="hash" />
+<qrati-connect organization-id={ORGANIZATION_ID} theme={theme} router="hash" />
 ```
 
 The bundle (and its styles) are loaded once on mount — see `src/App.svelte`.
@@ -27,17 +29,10 @@ bun dev
 
 Set these in `.env` (all optional; the demo org is used as a fallback):
 
-| Variable                 | Description                                                       |
-| ------------------------ | ----------------------------------------------------------------- |
-| `VITE_ORGANIZATION_ID`   | Your Qrati organization ID                                        |
-| `VITE_QRATI_SCRIPT_URL`  | CDN URL of the web-component bundle (`element/web.es.js`)          |
-| `VITE_API_ENDPOINT`      | Demo-login endpoint for custom-auth orgs. Leave empty to skip it. |
-
-## Demo auth
-
-Orgs with custom auth expect a known user. The login form (`src/auth.ts`) derives
-a stable `uid` from the email, optionally POSTs to `VITE_API_ENDPOINT`, then
-renders the widget with `uid` / `fname` / `lname` so the user is recognized.
+| Variable               | Description                                                |
+| ---------------------- | ----------------------------------------------------------|
+| `VITE_ORGANIZATION_ID` | Your Qrati organization ID                                |
+| `VITE_CDN_URL`         | CDN URL of the web-component bundle (`element/web.es.js`) |
 
 ## Other integration methods
 
