@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { ORGANIZATION_ID, QRATI_SCRIPT_URL, GITHUB_ORG, REPO } from './config';
-  import { loadUser, login, logout, type AuthUser } from './auth';
 
   const repoUrl = `https://github.com/${GITHUB_ORG}/${REPO}`;
   const vscodeUrl = `https://vscode.dev/github/${GITHUB_ORG}/${REPO}`;
@@ -11,11 +10,6 @@
     (localStorage.getItem('qc-theme') as 'light' | 'dark') ||
       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
   );
-  let user = $state<AuthUser | null>(loadUser());
-  let email = $state('');
-  let name = $state('');
-  let loading = $state(false);
-  let error = $state('');
 
   $effect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -37,30 +31,6 @@
   function toggleTheme() {
     theme = theme === 'dark' ? 'light' : 'dark';
   }
-
-  async function handleSubmit(e: Event) {
-    e.preventDefault();
-    if (!email.trim() || !name.trim()) {
-      error = 'Email and name are required.';
-      return;
-    }
-    loading = true;
-    error = '';
-    try {
-      user = await login(email.trim(), name.trim());
-    } catch {
-      error = 'Login failed. Try again.';
-    } finally {
-      loading = false;
-    }
-  }
-
-  function handleLogout() {
-    logout();
-    user = null;
-    email = '';
-    name = '';
-  }
 </script>
 
 <button class="theme-toggle" onclick={toggleTheme} aria-label="Toggle theme">
@@ -78,7 +48,7 @@
         This example shows how to embed
         <a href="https://qrati.com" target="_blank" rel="noopener noreferrer">Qrati</a> Connect into a
         Svelte app using the framework-agnostic <strong>web component</strong>, with a host-controlled
-        theme and a demo login for organizations that use custom auth.
+        theme.
       </p>
 
       <div class="action-pills" aria-label="Example links">
@@ -94,41 +64,13 @@
     </header>
 
     <main class="content-shell">
-      {#if user}
-        <div class="session-bar">
-          <span>Signed in as <strong>{user.fname} {user.lname}</strong> ({user.email})</span>
-          <button class="btn-ghost" onclick={handleLogout}>Log out</button>
-        </div>
-        <div class="widget-frame">
-          <qrati-connect
-            organization-id={ORGANIZATION_ID}
-            uid={user.userId}
-            fname={user.fname}
-            lname={user.lname}
-            theme={theme}
-            router="hash"
-          ></qrati-connect>
-        </div>
-      {:else}
-        <div class="login-card">
-          <h2>Demo sign in</h2>
-          <p class="sub">Identify yourself to load the widget as a known user.</p>
-          <form class="login-form" onsubmit={handleSubmit}>
-            <div class="field">
-              <label for="name">Full name</label>
-              <input id="name" type="text" bind:value={name} placeholder="John Doe" autocomplete="name" />
-            </div>
-            <div class="field">
-              <label for="email">Email</label>
-              <input id="email" type="email" bind:value={email} placeholder="john@example.com" autocomplete="email" />
-            </div>
-            {#if error}<p class="error">{error}</p>{/if}
-            <button class="btn-primary" type="submit" disabled={loading}>
-              {loading ? 'Signing in…' : 'Sign in & load widget'}
-            </button>
-          </form>
-        </div>
-      {/if}
+      <div class="widget-frame">
+        <qrati-connect
+          organization-id={ORGANIZATION_ID}
+          theme={theme}
+          router="hash"
+        ></qrati-connect>
+      </div>
     </main>
 
     <footer class="footer">
