@@ -1,4 +1,5 @@
 import { mount } from 'svelte'
+import 'vanilla-cookieconsent/dist/cookieconsent.css'
 import './app.css'
 import App from './App.svelte'
 
