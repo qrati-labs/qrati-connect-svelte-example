@@ -1,5 +1,9 @@
 # Qrati Connect — Svelte Example
 
+[![Qrati Connect — embeddable event photo galleries](public/qrati-connect-og.png)](https://qrati.com/connect)
+
+Add a live event photo gallery to Svelte sites with guest uploads, full-screen lightbox, emoji reactions, and contest leaderboards. [Explore Qrati Connect](https://qrati.com/connect) or [view the live Svelte example](https://qrati.com/connect/svelte-example).
+
 Embeds [Qrati Connect](https://qrati.com) into a Svelte + Vite app using the
 framework-agnostic **web component** integration, with a host-controlled
 light/dark theme. The demo org used here is configured for custom storage on
