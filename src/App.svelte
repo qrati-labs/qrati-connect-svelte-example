@@ -19,6 +19,7 @@
   $effect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.classList.toggle('dark', theme === 'dark');
       if (theme === 'dark') {
         document.documentElement.classList.add('cc--darkmode');
       } else {
